@@ -134,25 +134,46 @@ const statsObserver = new IntersectionObserver(entries => {
 }, { threshold: 0.5 });
 if (statsSection) statsObserver.observe(statsSection);
 
-// ── Contact form submit (demo)
+// ── Initialize Supabase
+const supabaseUrl = 'https://qtqvxgoepzkecgnlfspp.supabase.co';
+const supabaseKey = 'sb_publishable_XBuclrx6RHW4KWsOcepDoQ_8p7WNjUP';
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+// ── Contact form submit (Supabase)
 const form = document.getElementById('contact-form');
 const submitBtn = document.getElementById('form-submit-btn');
 const btnLabel = document.getElementById('btn-label');
 const formSuccess = document.getElementById('form-success');
 
 if (form) {
-  form.addEventListener('submit', e => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
     btnLabel.textContent = 'Sending…';
     submitBtn.disabled = true;
     submitBtn.style.opacity = '0.7';
 
-    // Simulate async send
-    setTimeout(() => {
+    const formData = new FormData(form);
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      service: formData.get('service'),
+      message: formData.get('message')
+    };
+
+    // Bazaga yozish
+    const { error } = await supabase.from('contacts').insert([data]);
+
+    if (error) {
+      console.error('Supabase Error:', error);
+      btnLabel.textContent = 'Error! Try again';
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = '1';
+      alert("Xatolik yuz berdi. Iltimos keyinroq qayta urunib ko'ring.");
+    } else {
       form.reset();
       submitBtn.style.display = 'none';
       formSuccess.hidden = false;
-    }, 1400);
+    }
   });
 }
 
