@@ -137,7 +137,7 @@ if (statsSection) statsObserver.observe(statsSection);
 // ── Initialize Supabase
 const supabaseUrl = 'https://qtqvxgoepzkecgnlfspp.supabase.co';
 const supabaseKey = 'sb_publishable_XBuclrx6RHW4KWsOcepDoQ_8p7WNjUP';
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // ── Contact form submit (Supabase)
 const form = document.getElementById('contact-form');
@@ -161,7 +161,7 @@ if (form) {
     };
 
     // Bazaga yozish
-    const { error } = await supabase.from('contacts').insert([data]);
+    const { error } = await supabaseClient.from('contacts').insert([data]);
 
     if (error) {
       console.error('Supabase Error:', error);
